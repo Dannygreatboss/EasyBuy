@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+ <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="description" content="Shop accessible and inclusive products at EasyBuy.">
+  <meta name="keywords" content="accessible ecommerce, inclusive shopping, adaptive products">
+  <meta name="author" content="EasyBuy Team">
+  <title>Shop - EasyBuy</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+</head>
+<body class="bg-gray-50 text-gray-900">
+
+  <!-- Navigation -->
+  <nav class="flex justify-between items-center p-6 bg-white shadow-md">
+    <div class="text-xl font-bold">EasyBuy</div>
+    <ul class="hidden md:flex space-x-6">
+      <li><a href="index.html" class="hover:text-purple-600"><strong>Home</strong></a></li>
+      <li><a href="shop.html" class="hover:text-purple-600"><strong>Shop</strong></a></li>
+      <li><a href="about.html" class="hover:text-purple-600"><strong>About</strong></a></li>
+      <li><a href="contact.html" class="hover:text-purple-600"><strong>Contact</strong></a></li>
+    </ul>
+  </nav>
+
+  <!-- Cart Section -->
+  <main class="max-w-5xl mx-auto p-6">
+    <h1 class="text-3xl font-bold mb-6">Your Shopping Cart</h1>
+
+    <div id="cartItems" class="space-y-6">
+      <!-- Dynamic cart items will appear here -->
+    </div>
+
+    <div class="mt-10 border-t pt-6 text-right">
+      <h2 class="text-2xl font-semibold">Total: <span id="cartTotal">₦0</span></h2>
+      <button class="mt-4 bg-purple-600 text-white px-6 py-2 rounded hover:bg-purple-700" onclick="checkout()">Proceed to Payment</button>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="text-center py-6 text-sm text-gray-500 bg-purple-100">
+    &copy; 2025 EasyBuy. All rights reserved.
+  </footer>
+
+  <script>
+    // Load cart items from localStorage
+    const cartData = JSON.parse(localStorage.getItem('cart')) || [];
+
+    const cartItemsContainer = document.getElementById('cartItems');
+    const cartTotalDisplay = document.getElementById('cartTotal');
+    
+    function renderCart() {
+      cartItemsContainer.innerHTML = '';
+      let total = 0;
+
+      if (cartData.length === 0) {
+        cartItemsContainer.innerHTML = '<p class="text-gray-600">Your cart is empty.</p>';
+        cartTotalDisplay.textContent = '₦0';
+        return;
+      }
+
+      cartData.forEach(item => {
+        const itemElement = document.createElement('div');
+        itemElement.className = 'bg-white shadow rounded-lg p-4 flex justify-between items-center';
+        itemElement.innerHTML = `
+          <div>
+            <h3 class="text-lg font-semibold">${item.name}</h3>
+            <p class="text-gray-500">₦${item.price}</p>
+          </div>
+          <button onclick="removeItem('${item.name}')" class="text-red-600 hover:underline">Remove</button>
+        `;
+        cartItemsContainer.appendChild(itemElement);
+        total += item.price;
+      });
+
+      cartTotalDisplay.textContent = `₦${total.toLocaleString()}`;
+    }
+
+    function removeItem(name) {
+      const index = cartData.findIndex(item => item.name === name);
+      if (index !== -1) {
+        cartData.splice(index, 1);
+        localStorage.setItem('cart', JSON.stringify(cartData));
+        renderCart();
+      }
+    }
+
+    function checkout() {
+      alert("Redirecting to payment gateway (demo only).");
+    }
+
+    renderCart();
+  </script>
+
+</body>
+</html>
