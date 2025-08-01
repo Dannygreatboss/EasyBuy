@@ -68,7 +68,7 @@
   <main class="max-w-5xl mx-auto p-6">
     <h1 class="text-3xl font-bold mb-6">Your Shopping Cart</h1>
 
-     <div id="cartItems" class="space-y-6">
+    <div id="cartItems" class="space-y-6">
       <!-- Dynamic cart items will appear here -->
     </div>
 
@@ -106,7 +106,7 @@
         return;
       }
 
-      cartData.forEach(item => {
+      cartData.forEach((item, index) => {
         const itemElement = document.createElement('div');
         itemElement.className = 'bg-white shadow rounded-lg p-4 flex justify-between items-center';
         itemElement.innerHTML = `
@@ -114,7 +114,7 @@
             <h3 class="text-lg font-semibold">${item.name}</h3>
             <p class="text-gray-500">₦${item.price}</p>
           </div>
-          <button onclick="removeItem('${item.name}')" class="text-red-600 hover:underline">Remove</button>
+          <button onclick="removeItem(${index})" class="text-red-600 hover:underline">Remove</button>
         `;
         cartItemsContainer.appendChild(itemElement);
         total += item.price;
@@ -123,13 +123,10 @@
       cartTotalDisplay.textContent = `₦${total.toLocaleString()}`;
     }
 
-    function removeItem(name) {
-      const index = cartData.findIndex(item => item.name === name);
-      if (index !== -1) {
-        cartData.splice(index, 1);
-        localStorage.setItem('cart', JSON.stringify(cartData));
-        renderCart();
-      }
+    function removeItem(index) {
+      cartData.splice(index, 1);
+      localStorage.setItem('cart', JSON.stringify(cartData));
+      renderCart();
     }
 
     function checkout() {
@@ -141,10 +138,78 @@
       });
       orderSummary.classList.remove('hidden');
       alert('Order placed successfully! Showing summary below.');
+      // Optional: Clear cart after checkout
+      // localStorage.removeItem('cart');
+    }
+
+    // Save product from home or shop pages
+    function addToCart(name, price) {
+      cartData.push({ name, price });
+      localStorage.setItem('cart', JSON.stringify(cartData));
+      alert(`${name} has been added to your cart.`);
     }
 
     renderCart();
   </script>
 
+</body>
+</html>
+  <script>
+    function searchProducts() {
+      const query = document.getElementById("navSearchInput").value.toLowerCase();
+      const cards = document.querySelectorAll("#productGrid > div");
+      cards.forEach(card => {
+        const title = card.querySelector("h3").innerText.toLowerCase();
+        card.style.display = title.includes(query) ? "block" : "none";
+      });
+    }
+  </script>
+
+  <script>
+    // Show search bar on larger screens
+    document.addEventListener("DOMContentLoaded", function() {
+      const searchForm = document.querySelector("form");
+      if (window.innerWidth >= 768) {
+        searchForm.classList.remove("hidden");
+      }
+    });
+  </script>
+
+  <script>
+    let cartCount = 0;
+
+    // Fake demo function — increase cart count on "Add to Cart"
+    document.querySelectorAll('button').forEach(btn => {
+      if (btn.innerText.trim() === 'Add to Cart') {
+        btn.addEventListener('click', () => {
+          cartCount++;
+          const badge = document.getElementById('cartCount');
+          badge.innerText = cartCount;
+          badge.classList.remove('hidden');
+        });
+      }
+    });
+  </script>
+
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics.js"></script>
+
+  <script>
+    document.getElementById('menu-toggle').addEventListener('click', () => {
+      document.getElementById('mobile-menu').classList.toggle('hidden');
+    });
+  </script>
+
+<script>
+  function addToCart(name, price) {
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    cart.push({ name, price });
+    localStorage.setItem('cart', JSON.stringify(cart));
+    alert(`${name} has been added to your cart.`);
+  }
+</script> 
+
+  
 </body>
 </html>
